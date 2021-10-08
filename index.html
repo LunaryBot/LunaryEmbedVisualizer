@@ -6,10 +6,10 @@
 
     <!--Stylesheets-->
 
-    <!-- <link rel="stylesheet" href="./src/css/main.css"> -->
     <link rel="stylesheet" href="embed-editor.css">
     <link rel="stylesheet" href="embed-visualizer.css">
     <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" />
 
     <title> Embed vizualizer </title>
   </head>
@@ -24,14 +24,12 @@
                 <span class="timestamp">Hoje às 11:13</span>
     
                 <!-- Embed -->
-                <div class="message" id="embed">
-                    <div class="btn-edit" style="width: 200px;"> Adicionar Content </div>
+                <div class="message">
+                    <div class="btn-edit" style="width: 200px;"><i class="fas fa-comment-alt-lines"></i> Adicionar Content </div>
                     <!-- <div class="content">
                         <span class="markdown">Message Content</span>
                     </div> -->
-                </div>
-                <div class="message">
-                    <div class="embed">
+                    <div class="embed" id="embed">
                         <div type="color" class="embed-color" style="background-color:#FFFFFF"></div>
                         <div class="embed-content-container">
                             <div class="embed-content">
@@ -52,30 +50,32 @@
                                 
                             </div>
                             
-                            <div class="btn-edit"> Adicionar Autor </div>
-                            <div class="btn-edit"> Adicionar Título </div>
-                            <div class="btn-edit"> Adicionar Descrição </div>
-                            <div class="btn-edit"> Adicionar Thumbnail </div>
-                            <div class="btn-edit"> Adicionar Imagem </div>
+                            <div class="btn-edit"><i class="fas fa-at"></i> Adicionar Autor </div>
+                            <div class="btn-edit"><i class="fas fa-text"></i> Adicionar Título </div>
+                            <div class="btn-edit"><i class="fas fa-comment-alt-edit"></i> Adicionar Descrição </div>
+                            <div class="btn-edit"><i class="fas fa-portrait"></i> Adicionar Thumbnail </div>
+                            <div class="btn-edit"><i class="fas fa-image"></i> Adicionar Imagem </div>
                             <div class="embed-fields">
                                 
                             </div>
-                            <div class="btn-edit"> Adicionar Field </div>
+                            <div class="btn-edit"><i class="fas fa-grip-lines"></i> Adicionar Field </div>
                             
                             <div class="embed-image-container">
                                 <!-- <img src="embed-image.gif" class="embed-image" /> -->
                             </div>
 
-                            <div class="btn-edit"> Adicionar Footer </div>
-                            <div class="embed-footer">
-                                <!-- <img class="embed-footer-icon" src="luny-avatar.png">
-                                <span class="embed-footer-text">Lunary Bot • 03/07/2021 22:16</span> -->
-                            </div>
+                            <div class="btn-edit"><i class="fas fa-credit-card-blank"></i> Adicionar Footer </div>
+                            <!-- <div class="embed-footer">
+                                 <img class="embed-footer-icon" src="luny-avatar.png">
+                                <span class="embed-footer-text">Lunary Bot • 03/07/2021 22:16</span>
+                            </div> -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="btn-edit" style="width: 200px; margin-left:20px;"><i class="fas fa-comment-alt-medical"></i> Adicionar Embed</div>
+        <div class="btn-edit" style="width: 200px; margin-left:20px; background-color: #B22222; opacity: 0;"><i class="fas fa-comment-alt-times"></i> Remover Embed</div>
     </div>
 
     <input type="color" id="pick-color" style="display: none;" value="#FFFAFA">
