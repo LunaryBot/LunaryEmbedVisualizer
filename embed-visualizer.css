@@ -110,55 +110,12 @@ a:hover {
     height: 3.2rem;
 }
 
-.info {
-    display: flex;
-    max-width: 100%;
-    margin: 0 5px 10px;
-}
-
-.info__guild-icon-container {
-    flex: 0;
-}
-
-.info__guild-icon {
-    max-width: 88px;
-    max-height: 88px;
-}
-
-.info__metadata {
-    flex: 1;
-    margin-left: 10px;
-}
-
-.info__guild-name {
-    font-size:1.4em
-}
-
-.info__channel-name {
-    font-size:1.2em
-}
-
-.info__channel-topic {
-    margin-top:2px
-}
-
-.info__channel-message-count {
-    margin-top:2px
-}
-
-.info__channel-date-range {
-    margin-top:2px
-}
-
-.chatlog {
-    max-width:100%;
-    margin-bottom:24px
-}
-
 .message-group {
     display:flex;
-    margin:0 10px;
+    /* margin:0 10px; */
+    margin: auto;
     padding:15px 0;
+    width: 60vw;
 }
 
 .author-avatar-container {
@@ -175,7 +132,8 @@ a:hover {
 
 .messages {
     flex:1;
-    min-width:50%;
+    
+    /* min-width:50%; */
     margin-left:20px
 }
 

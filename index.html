@@ -14,13 +14,22 @@
     <title> Embed vizualizer </title>
   </head>
   <body>
+    <div class="modal">
+        <div class="box">
+            <!-- <textarea class="text-input" id="json-code"></textarea> null
+            <div class="footer">
+                <button class="remove"><i class="fas fa-trash"></i> Remover</button>
+                <button class="save"><i class="fas fa-save"></i> Salvar</button>
+            </div> -->
+        </div>
+    </div>
     <div style="margin-left: auto; margin-right: auto;">
         <div class="message-group">
             <div class="author-avatar-content">
                 <img class="author-avatar" src="luny-avatar.png" />
             </div>
             <div class="messages">
-                <span class="author-name">Lunar<span class="bot-tag"><svg width="16" height="16" viewBox="0 0 16 15.2"><path d="M7.4,11.17,4,8.62,5,7.26l2,1.53L10.64,4l1.36,1Z" fill="currentColor"></path></svg>BOT</span></span>
+                <span class="author-name">Lunar<span class="bot-tag"><svg width="16" height="16" viewBox="0 0 16 15.2"><path d="M7.4,11.17,4,8.62,5,7.26l2,1.53L10.64,4l1.36,1Z" fill="currentColor"></path></svg>BOT </span></span>
                 <span class="timestamp">Hoje às 11:13</span>
     
                 <!-- Embed -->
@@ -74,10 +83,15 @@
                 </div>
             </div>
         </div>
-        <div class="btn-edit" style="width: 200px; margin-left:20px;"><i class="fas fa-comment-alt-medical"></i> Adicionar Embed</div>
-        <div class="btn-edit" style="width: 200px; margin-left:20px; background-color: #B22222; opacity: 0;"><i class="fas fa-comment-alt-times"></i> Remover Embed</div>
+        <div class="btn-edit" style="width: 200px; margin-left:20%;"><i class="fas fa-comment-alt-medical"></i> Adicionar Embed</div>
+        <div class="btn-edit" style="width: 200px; margin-left:45%; background-color: #B22222; opacity: 0;"><i class="fas fa-comment-alt-times"></i> Remover Embed</div>
     </div>
+    <textarea class="text-input" id="json-code"></textarea>
 
     <input type="color" id="pick-color" style="display: none;" value="#FFFAFA">
+    <br>
+    <br>
+    <br>
+    <br>
   </body>
 </html>
