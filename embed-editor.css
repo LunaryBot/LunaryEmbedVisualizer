@@ -1,0 +1,14 @@
+.btn-edit {
+    /* margin: 20px; */
+    margin-bottom: 0;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #161716;
+    cursor: pointer;
+    width: auto;
+    transition: 0.75s;
+}
+
+.btn-edit:hover {
+    background-color: #0d0e0d;
+}
