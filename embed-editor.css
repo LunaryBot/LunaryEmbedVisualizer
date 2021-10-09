@@ -8,6 +8,7 @@
     transition: 0.75s;
     font-weight: 600;
     vertical-align:middle;
+    width: 220px;
 }
 
 .btn-edit i {
@@ -44,6 +45,13 @@ textarea::-webkit-scrollbar-thumb {
     border-radius: 15px;
 }
 
+.modal-blur {
+    -webkit-filter: blur(100px);
+    -moz-filter: blur(100px);
+    -o-filter: blur(100px);
+    -ms-filter: blur(100px);
+}
+
 .modal {
     position: fixed;
     top: 0;
@@ -58,9 +66,8 @@ textarea::-webkit-scrollbar-thumb {
     overflow: hidden;
     -webkit-overflow-scrolling: touch;
     background: rgba(0,0,0,.85);
-    opacity: 0;
     user-select: none;
-    cursor: none;
+    cursor: auto;
 }
 
 .modal .box {

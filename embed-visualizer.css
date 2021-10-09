@@ -475,10 +475,3 @@ a:hover {
     font-weight:600;
     /* color: dimgrey; */
 }
-
-.embed-title:hover span,
-.embed-description:hover span {
-    border: 2px solid #A020F0;
-    margin-left: -2px;
-    color: #A020F0;
-}

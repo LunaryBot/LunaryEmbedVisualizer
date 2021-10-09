@@ -14,16 +14,18 @@
     <title> Embed vizualizer </title>
   </head>
   <body>
-    <div class="modal">
+    <div class="modal" id="modal">
         <div class="box">
-            <!-- <textarea class="text-input" id="json-code"></textarea> null
+            <div id="box-content"></div>
+            <!-- <textarea class="text-input" id="json-code"></textarea> null -->
             <div class="footer">
-                <button class="remove"><i class="fas fa-trash"></i> Remover</button>
-                <button class="save"><i class="fas fa-save"></i> Salvar</button>
-            </div> -->
+                <button class="remove" id="remove"><i class="fas fa-trash"></i> Remover</button>
+                <button class="remove" id="cancel"><i class="fas fa-eraser"></i> Cancelar</button>
+                <button class="save" id="save"><i class="fas fa-save"></i> Salvar</button>
+            </div>
         </div>
     </div>
-    <div style="margin-left: auto; margin-right: auto;">
+    <div id="editor">
         <div class="message-group">
             <div class="author-avatar-content">
                 <img class="author-avatar" src="luny-avatar.png" />
@@ -34,10 +36,10 @@
     
                 <!-- Embed -->
                 <div class="message">
-                    <div class="btn-edit" style="width: 200px;"><i class="fas fa-comment-alt-lines"></i> Adicionar Content </div>
-                    <!-- <div class="content">
-                        <span class="markdown">Message Content</span>
-                    </div> -->
+                    <div class="btn-edit" id="b-content"><i class="fas fa-comment-alt-lines"></i> Adicionar Content </div>
+                    <div class="content">
+                        <span class="markdown" id="content"></span>
+                    </div>
                     <div class="embed" id="embed">
                         <div type="color" class="embed-color" style="background-color:#FFFFFF"></div>
                         <div class="embed-content-container">
@@ -51,8 +53,8 @@
                                         <!-- <span class="markdown"><a href="/">Titulo da embed</a></span> -->
                                     </div>
                                     
-                                    <div class="embed-description">
-                                        <!-- <span class="markdown">Descrição da embed</span> -->
+                                    <div class="embed-description" id="description">
+                                        <span class="markdown"></span>
                                     </div>
                                 </div>
                                 <img src="" class="embed-thumbnail" />
@@ -61,7 +63,7 @@
                             
                             <div class="btn-edit"><i class="fas fa-at"></i> Adicionar Autor </div>
                             <div class="btn-edit"><i class="fas fa-text"></i> Adicionar Título </div>
-                            <div class="btn-edit"><i class="fas fa-comment-alt-edit"></i> Adicionar Descrição </div>
+                            <div class="btn-edit" id="b-description"><i class="fas fa-comment-alt-edit"></i> Adicionar Descrição </div>
                             <div class="btn-edit"><i class="fas fa-portrait"></i> Adicionar Thumbnail </div>
                             <div class="btn-edit"><i class="fas fa-image"></i> Adicionar Imagem </div>
                             <div class="embed-fields">
@@ -85,13 +87,128 @@
         </div>
         <div class="btn-edit" style="width: 200px; margin-left:20%;"><i class="fas fa-comment-alt-medical"></i> Adicionar Embed</div>
         <div class="btn-edit" style="width: 200px; margin-left:45%; background-color: #B22222; opacity: 0;"><i class="fas fa-comment-alt-times"></i> Remover Embed</div>
+        <textarea class="text-input" id="json-code"></textarea>
+        
+        <input type="color" id="pick-color" style="display: none;" value="#FFFAFA">
+        <br>
+        <br>
+        <br>
+        <br>
     </div>
-    <textarea class="text-input" id="json-code"></textarea>
 
-    <input type="color" id="pick-color" style="display: none;" value="#FFFAFA">
-    <br>
-    <br>
-    <br>
-    <br>
+    <script src="jquery.js"></script>
+
+    <script defer>
+        let cache = $("#json-code").val()
+        $("#b-description").click(function() {
+            modalShow()
+            const content = $("#box-content")
+            content.append(`
+                <textarea class="text-input" id="input-textarea"></textarea> <div style="display: inline-block;" id="#c-description">null</div>
+            `)
+        })
+
+        $("#json-code").keyup(function() {
+            const res = buildEmbed($(this).val())
+        })
+
+        $("#json-code").change(function() {
+            try {
+                const json = JSON.stringify(JSON.parse($(this).val()), null, 2)
+                $(this).val(json)
+            } catch(_) {
+                return
+            }
+        })
+
+        function modalShow() {
+            const modal = $("#modal")
+            const editor = $("#editor")
+            const data = {"visibility": "visible"}
+            modal.css(data)
+            editor.addClass("modal-blur")
+        }
+
+        function modalHidden() {
+            const modal = $("#modal")
+            const editor = $("#editor")
+            const data = {"visibility": "hidden"}
+            modal.css(data)
+            editor.removeClass("modal-blur")
+        }
+
+        function buildEmbed(json) {
+            if(typeof json == "string") {
+                try {
+                    json = JSON.parse(json)
+                } catch (_) {
+                    return false
+                }
+
+                if(json.content && typeof json.content == "string") {
+                    const content = $("#content"),
+                    contentBtn = $("#b-content")
+
+                    contentBtn.hide()
+                    content.html(toHTML(json.content, {emoji: true, largeEmoji: true}))
+                } else {
+                    const content = $("#content"),
+                    contentBtn = $("#b-content")
+
+                    content.html("")
+                    contentBtn.show()
+                }
+            }
+        }
+
+        function toHTML(text, options = {}) {
+            const emojiRegex = /<(a)?:(.{2,32}):(\d{17,19})>/g
+            
+            text = text.replace(/\n/g, "<br>")
+            
+            if(options.quote !== false) {
+                text = text.replace(/^>\s(.{1,})/g, '<span class="quote"></span> $1')
+                text = text.replace(/<br>>\s(.{1,})/g, '<br><span class="quote"></span> $1')
+            }
+
+            if (options.emoji === true) {
+                text = text.replace(emojiRegex,`<img class="emoji-${options.largeEmoji == true && [...text.matchAll(emojiRegex)].length <= 27 ? "large" : "small"}" name="$2" animated="$1" src="https://cdn.discordapp.com/emojis/$3" width="15px" height="15px" />`);
+            };
+
+            if (options.bold != false) {
+                text = text.replace(/\*\*(.{1,})\*\*/ig,'<strong>$1</strong>');
+            }
+
+            if (options.underline !== false) {
+                text = text.replace(/\_\_(.{1,})\_\_/ig,'<u>$1</u>');
+            }
+
+            if (options.italics != false) {
+                text = text.replace(/\*(.{1,})\*|_(.{1,})_/ig,'<i>$1$2</i>');
+            }
+
+            if (options.strike !== false) {
+                text = text.replace(/~~(.{1,})~~/ig, '<strike>$1</strike>');
+            }
+
+            if (options.code !== false) {
+                text = text.replace(/```(.{1,})```/ig,'<div class="codeblock">$1</div>');
+            }
+
+            if (options.inlineCode !== false) {
+                text = text.replace(/`(.{1,})`/ig,'<span class="code">$1</span>');
+            }
+
+            if (options.hyperlinks !== false) {
+                text = text.replace(/\[(.{1,})\]\(((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)\)/ig, '<a href="$2">$1</a>');
+            };
+
+            if (options.links != false) {
+                text = text.replace(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/gi, '<a href="$1">$1</a>')
+            }
+
+            return text
+        }
+    </script>
   </body>
 </html>
