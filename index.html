@@ -97,15 +97,21 @@
     </div>
 
     <script src="jquery.js"></script>
+    <script src="emojis.js"></script>
 
     <script defer>
-        let cache = $("#json-code").val()
+        let _json = {}
+        const superEmojisRegex = new RegExp(`${Object.keys(emojis).map(x => `:${x}:`).join("|")}`, 'g') 
         $("#b-description").click(function() {
             modalShow()
             const content = $("#box-content")
-            content.append(`
+            content.html(`
                 <textarea class="text-input" id="input-textarea"></textarea> <div style="display: inline-block;" id="#c-description">null</div>
             `)
+        })
+
+        $("#c-description").keyup(function() {
+            $(this)
         })
 
         $("#json-code").keyup(function() {
@@ -116,6 +122,7 @@
             try {
                 const json = JSON.stringify(JSON.parse($(this).val()), null, 2)
                 $(this).val(json)
+                _json = JSON.parse($(this).val())
             } catch(_) {
                 return
             }
@@ -145,6 +152,8 @@
                     return false
                 }
 
+                _json = json
+
                 if(json.content && typeof json.content == "string") {
                     const content = $("#content"),
                     contentBtn = $("#b-content")
@@ -167,6 +176,9 @@
             text = text.replace(/\n/g, "<br>")
             
             if(options.quote !== false) {
+                text = text.replace(superEmojisRegex, (x) => {
+                    return emojis[x.replace(/^:(.*?):$/, "$1")]
+                })
                 text = text.replace(/^>\s(.{1,})/g, '<span class="quote"></span> $1')
                 text = text.replace(/<br>>\s(.{1,})/g, '<br><span class="quote"></span> $1')
             }
