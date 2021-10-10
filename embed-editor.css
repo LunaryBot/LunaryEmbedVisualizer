@@ -68,6 +68,7 @@ textarea::-webkit-scrollbar-thumb {
     background: rgba(0,0,0,.85);
     user-select: none;
     cursor: auto;
+    overflow-y: scroll;
 }
 
 .modal .box {

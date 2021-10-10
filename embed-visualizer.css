@@ -239,12 +239,14 @@ a:hover {
 .embed-title {
     margin-bottom: 4px;
     font-size: .875em;
-    font-weight: 600
+    font-weight: 600;
+    max-width: 512px;
 }
 
 .embed-description {
     font-weight:500;
-    font-size:14px
+    font-size:14px;
+    max-width: 512px;
 }
 
 .embed-fields {

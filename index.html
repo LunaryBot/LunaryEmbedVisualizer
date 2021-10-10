@@ -17,11 +17,10 @@
     <div class="modal" id="modal">
         <div class="box">
             <div id="box-content"></div>
-            <!-- <textarea class="text-input" id="json-code"></textarea> null -->
             <div class="footer">
                 <button class="remove" id="remove"><i class="fas fa-trash"></i> Remover</button>
                 <button class="remove" id="cancel"><i class="fas fa-eraser"></i> Cancelar</button>
-                <button class="save" id="save"><i class="fas fa-save"></i> Salvar</button>
+                <button class="save" id="save" onclick="save()"><i class="fas fa-save"></i> Salvar</button>
             </div>
         </div>
     </div>
@@ -45,24 +44,21 @@
                         <div class="embed-content-container">
                             <div class="embed-content">
                                 <div class="embed-text">
-                                    <div class="embed-author">
-                                        <!-- <img class="embed-author-avatar" src="bae-avatar.gif" />
-                                        <a href="/"><span class="embed-author-name">Bae#0016</span></a> -->
-                                    </div>
+                                    <div class="embed-author" id="author"></div>
                                     <div class="embed-title">
-                                        <!-- <span class="markdown"><a href="/">Titulo da embed</a></span> -->
+                                        <span class="markdown" id="title"></span>
                                     </div>
                                     
-                                    <div class="embed-description" id="description">
-                                        <span class="markdown"></span>
+                                    <div class="embed-description">
+                                        <span class="markdown" id="description"></span>
                                     </div>
                                 </div>
                                 <img src="" class="embed-thumbnail" />
                                 
                             </div>
                             
-                            <div class="btn-edit"><i class="fas fa-at"></i> Adicionar Autor </div>
-                            <div class="btn-edit"><i class="fas fa-text"></i> Adicionar Título </div>
+                            <div class="btn-edit" id="b-author"><i class="fas fa-at"></i> Adicionar Autor </div>
+                            <div class="btn-edit" id="b-title"><i class="fas fa-text"></i> Adicionar Título </div>
                             <div class="btn-edit" id="b-description"><i class="fas fa-comment-alt-edit"></i> Adicionar Descrição </div>
                             <div class="btn-edit"><i class="fas fa-portrait"></i> Adicionar Thumbnail </div>
                             <div class="btn-edit"><i class="fas fa-image"></i> Adicionar Imagem </div>
@@ -100,33 +96,153 @@
     <script src="emojis.js"></script>
 
     <script defer>
-        let _json = {}
-        const superEmojisRegex = new RegExp(`${Object.keys(emojis).map(x => `:${x}:`).join("|")}`, 'g') 
-        $("#b-description").click(function() {
+        let _json = {
+            "content": "A Lunar é muito fofinha <:ninlove:885324695971459162>"
+        }
+        buildEmbed(JSON.stringify(_json))
+        changeJSON(JSON.stringify(_json))
+        let newJson = { ..._json }
+        let urlRegex = /^((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/i
+        
+        // Content
+        $("#b-content").click(editContent)
+
+        $("#content").click(editContent)
+
+        function editContent() {
+            modalShow()
+            const content = $("#box-content")
+            $("#remove").attr("onclick", 'remove("content")')
+            content.html(`
+                <textarea class="text-input" id="input-content">${_json.content || ""}</textarea> <div style="display: inline-block;" id="c-content">null</div>
+            `)
+
+            $("#input-content").keyup(function(e) {
+                newJson.content = $(this).val()
+            })
+        }
+
+        // Title
+        $("#b-title").click(editTitle)
+
+        $("#title").click(editTitle)
+
+        function editTitle() {
             modalShow()
             const content = $("#box-content")
             content.html(`
-                <textarea class="text-input" id="input-textarea"></textarea> <div style="display: inline-block;" id="#c-description">null</div>
+                <textarea class="text-input" id="input-title">${_json.embed ? _json.embed.title || "" : ""}</textarea> <div style="display: inline-block;" id="c-title">null</div>
             `)
-        })
 
-        $("#c-description").keyup(function() {
-            $(this)
-        })
+            $("#input-title").keyup(function() {
+                if(!newJson.embed) newJson.embed = {}
+
+                newJson.embed.title = $(this).val()
+            })
+        }
+
+        // Author
+        $("#b-author").click(editAuthor)
+
+        $("#author").click(editAuthor)
+
+        function editAuthor() {
+            modalShow()
+            const content = $("#box-content")
+            content.html(`
+                <h3>Nome</h3><br><textarea class="text-input" id="input-author-name">${_json.embed && _json.embed.author ? _json.embed.author.name || "" : ""}</textarea> <div style="display: inline-block;" id="c-title">null</div>
+                <hr>
+                <h3>URL</h3><br><textarea class="text-input" id="input-author-url">${_json.embed && _json.embed.author ? _json.embed.author.url || "" : ""}</textarea> <div style="display: inline-block;" id="c-title">null</div>
+                <hr>     
+                <h3>Icone URL</h3><br><textarea class="text-input" id="input-author-icon_url">${_json.embed && _json.embed.author ? _json.embed.author.icon_url || "" : ""}</textarea> <div style="display: inline-block;" id="c-title">null</div>
+            `)
+
+            $("#input-author-name").keyup(function() {
+                if(!newJson.embed) newJson.embed = {}
+                if(!newJson.embed.author) newJson.embed.author = {}
+                newJson.embed.author.name = $(this).val()
+
+                console.log(newJson)
+            })
+
+            $("#input-author-url").keyup(function() {
+                if(!newJson.embed) newJson.embed = {}
+                if(!newJson.embed.author) newJson.embed.author = {}
+                newJson.embed.author.url = $(this).val()
+            })
+
+            $("#input-author-icon_url").keyup(function() {
+                if(!newJson.embed) newJson.embed = {}
+                if(!newJson.embed.author) newJson.embed.author = {}
+                newJson.embed.author.icon_url = $(this).val()
+            })
+        }
+
+
+
+        // Description
+        $("#b-description").click(editDescription)
+
+        $("#description").click(editDescription)
+
+        function editDescription() {
+            modalShow()
+            const content = $("#box-content")
+            content.html(`
+                <textarea class="text-input" id="input-description">${_json.embed ? _json.embed.description || "" : ""}</textarea> <div style="display: inline-block;" id="c-description">null</div>
+            `)
+
+            $("#input-description").keyup(function() {
+                if(!newJson.embed) newJson.embed = {}
+
+                newJson.embed.description = $(this).val()
+            })
+        }
+
+        function save() {
+            try {
+                const json = JSON.stringify(newJson, null, 2)
+                $("#json-code").val(json)
+                _json = { ...newJson }
+                console.log(_json)
+                buildEmbed(json)
+                modalHidden()
+            } catch(_) {
+                return
+            }
+        }
+
+        function remove(item) {
+            const button = $(`#b-${item}`),
+            _item = $(`#${item}`)
+            _item.html("")
+            button.show()
+            
+            if(_json[item]) delete _json[item]
+            if(_json.embed && _json.embed[item]) delete _json.embed[item]
+            console.log(_json)
+            newJson = { ..._json }
+            changeJSON(JSON.stringify(_json))
+            modalHidden()
+        }
 
         $("#json-code").keyup(function() {
             const res = buildEmbed($(this).val())
         })
 
-        $("#json-code").change(function() {
+        $("#json-code").change(function() { changeJSON($(this).val()) })
+
+        function changeJSON(json) {
             try {
-                const json = JSON.stringify(JSON.parse($(this).val()), null, 2)
-                $(this).val(json)
-                _json = JSON.parse($(this).val())
+                json = JSON.stringify(JSON.parse(json), null, 2)
+                $("#json-code").val(json)
+                _json = JSON.parse(json)
+                newJson = { ..._json }
+                buildEmbed(_json)
             } catch(_) {
                 return
             }
-        })
+        }
 
         function modalShow() {
             const modal = $("#modal")
@@ -154,18 +270,64 @@
 
                 _json = json
 
-                if(json.content && typeof json.content == "string") {
-                    const content = $("#content"),
-                    contentBtn = $("#b-content")
+                const content = $("#content"),
+                contentBtn = $("#b-content")
 
+                if(json.content && typeof json.content == "string") {
                     contentBtn.hide()
                     content.html(toHTML(json.content, {emoji: true, largeEmoji: true}))
                 } else {
-                    const content = $("#content"),
-                    contentBtn = $("#b-content")
-
                     content.html("")
                     contentBtn.show()
+                }
+
+                if(typeof json.embed == "object" && !Array.isArray(json.embed)) {
+                    const title = $("#title"),
+                    titleBtn = $("#b-title"),
+                    description = $("#description"),
+                    descriptionBtn = $("#b-description"),
+                    author = $("#author"),
+                    authorBtn = $("#b-author")
+
+                    if(typeof json.embed.author == "object" && !Array.isArray(json.embed.author)) {
+                        if(json.embed.author.name && typeof json.embed.author.name == "string") {
+                            const text = json.embed.author.name
+                            authorBtn.hide()
+                            author.html(`
+                                ${json.embed.author.icon_url ? `<img class="embed-author-avatar" src="${json.embed.author.icon_url}" />` : ""}
+                                <span class="embed-author-name">${text}</span>
+                            `)
+                        } else {
+                            author.html("")
+                            authorBtn.show()
+                        }
+                    } else {
+                        author.html("")
+                        authorBtn.show()
+                    }
+
+                    if(json.embed.title && typeof json.embed.title == "string") {
+                        titleBtn.hide()
+                        title.html(toHTML(json.embed.title, {
+                            emoji: true,
+                            stripLinks: true,
+                            hyperlinks: false,
+                            code: false,
+                            inlineCode: false
+                        }))
+                    } else {
+                        title.html("")
+                        titleBtn.show()
+                    }
+
+                    if(json.embed.description && typeof json.embed.description == "string") {
+                        descriptionBtn.hide()
+                        description.html(toHTML(json.embed.description, {emoji: true}))
+                    } else {
+                        description.html("")
+                        descriptionBtn.show()
+                    }
+
                 }
             }
         }
@@ -176,7 +338,7 @@
             text = text.replace(/\n/g, "<br>")
             
             if(options.quote !== false) {
-                text = text.replace(superEmojisRegex, (x) => {
+                text = text.replace(new RegExp(`${Object.keys(emojis).map(x => `:${x}:`).join("|")}`, 'g'), (x) => {
                     return emojis[x.replace(/^:(.*?):$/, "$1")]
                 })
                 text = text.replace(/^>\s(.{1,})/g, '<span class="quote"></span> $1')
@@ -184,7 +346,13 @@
             }
 
             if (options.emoji === true) {
-                text = text.replace(emojiRegex,`<img class="emoji-${options.largeEmoji == true && [...text.matchAll(emojiRegex)].length <= 27 ? "large" : "small"}" name="$2" animated="$1" src="https://cdn.discordapp.com/emojis/$3" width="15px" height="15px" />`);
+                text = text.replace(emojiRegex, `<img class="emoji-${(() => {
+                    const _emojis = [...text.matchAll(emojiRegex)];
+                    if(!(options.largeEmoji == true && _emojis.length <= 27)) return false;
+
+                    if(text.replace(emojiRegex, "").trim() == "") return true;
+                    else return false;
+                })() ? "large" : "small"}" name="$2" alt="<$1:$2:$3>" animated="$1" src="https://cdn.discordapp.com/emojis/$3" />`);
             };
 
             if (options.bold != false) {
@@ -215,9 +383,9 @@
                 text = text.replace(/\[(.{1,})\]\(((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)\)/ig, '<a href="$2">$1</a>');
             };
 
-            if (options.links != false) {
-                text = text.replace(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/gi, '<a href="$1">$1</a>')
-            }
+            // if (options.links != false) {
+            //     text = text.replace(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/gi, '<a href="$1">$1</a>')
+            // }
 
             return text
         }
