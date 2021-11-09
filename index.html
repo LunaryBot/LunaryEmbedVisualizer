@@ -19,7 +19,7 @@
             <div id="box-content"></div>
             <div class="footer">
                 <button class="remove" id="remove"><i class="fas fa-trash"></i> Remover</button>
-                <button class="remove" id="cancel"><i class="fas fa-eraser"></i> Cancelar</button>
+                <button class="remove" id="cancel" onclick="cancel()"><i class="fas fa-eraser"></i> Cancelar</button>
                 <button class="save" id="save" onclick="save()"><i class="fas fa-save"></i> Salvar</button>
             </div>
         </div>
@@ -267,9 +267,19 @@
                 _json = { ...newJson }
                 console.log(_json)
                 buildEmbed(json)
-            } catch(_) {
-                console.log(_)    
-            }
+            } catch(_) {}
+
+            modalHidden()
+        }
+
+        function cancel() {
+            try {
+                const json = JSON.stringify(_json, null, 2)
+                $("#json-code").val(json)
+                newJson = { ..._json }
+                console.log(_json)
+                buildEmbed(json)
+            } catch(_) {}
 
             modalHidden()
         }
