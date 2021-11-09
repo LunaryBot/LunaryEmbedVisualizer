@@ -118,6 +118,12 @@ a:hover {
     width: 60vw;
 }
 
+@media screen and (max-width: 700px) {
+    .message-group{
+        margin: 0
+    }
+}
+
 .author-avatar-container {
     flex:0;
     width:40px;
@@ -207,9 +213,10 @@ a:hover {
 }
 
 .embed-author {
+    max-width: 512px;
     display:flex;
     align-items:center;
-    margin-bottom:5px
+    margin-bottom:5px;
 }
 
 .embed-author a {
@@ -296,6 +303,7 @@ a:hover {
 }
 
 .embed-footer {
+    max-width: 512px;
     margin-top:10px
 }
 

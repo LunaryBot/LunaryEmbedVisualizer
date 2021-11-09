@@ -62,15 +62,15 @@
                             <div class="btn-edit" id="b-description"><i class="fas fa-comment-alt-edit"></i> Adicionar Descrição </div>
                             <div class="btn-edit"><i class="fas fa-portrait"></i> Adicionar Thumbnail </div>
                             <div class="btn-edit"><i class="fas fa-image"></i> Adicionar Imagem </div>
-                            <div class="embed-fields">
+                            <div class="embed-fields" id="fields">
                                 
                             </div>
-                            <div class="btn-edit"><i class="fas fa-grip-lines"></i> Adicionar Field </div>
+                            <div class="btn-edit" id="b-field"><i class="fas fa-grip-lines"></i> Adicionar Field </div>
                             
                             <div class="embed-image-container">
                                 <!-- <img src="embed-image.gif" class="embed-image" /> -->
                             </div>
-
+                            
                             <div class="btn-edit"><i class="fas fa-credit-card-blank"></i> Adicionar Footer </div>
                             <!-- <div class="embed-footer">
                                  <img class="embed-footer-icon" src="luny-avatar.png">
@@ -99,6 +99,20 @@
         let _json = {
             "content": "A Lunar é muito fofinha <:ninlove:885324695971459162>"
         }
+
+        const constants = {
+            "userID": "822470491574763580",
+            "user-tag": "Pinho#1856",
+            "@user": '<span class="mention">@Pinho</span>',
+            "authorID": "452618703792766987",
+            "author-tag": "Bae#5956",
+            "@author": '<span class="mention">@Bae</span>',
+            "reason": "Regra 13: É biscoito, bobo",
+            "notify-dm": "True",
+            "time": "1 hora e 30 minutos",
+            "id": "mhjr44cg-f1yu-0o2d-8wxq-m3n56kbgwp"
+        }
+
         buildEmbed(JSON.stringify(_json))
         changeJSON(JSON.stringify(_json))
         let newJson = { ..._json }
@@ -114,11 +128,12 @@
             const content = $("#box-content")
             $("#remove").attr("onclick", 'remove("content")')
             content.html(`
-                <textarea class="text-input" id="input-content">${_json.content || ""}</textarea> <div style="display: inline-block;" id="c-content">null</div>
+                <textarea class="text-input" id="input-content" maxlength="2048">${_json.content || ""}</textarea> <div style="display: inline-block;"><span id="c-content">${(_json.content || "").length}</span></div>
             `)
 
-            $("#input-content").keyup(function(e) {
+            $("#input-content").keyup(function() {
                 newJson.content = $(this).val()
+                $("#c-content").html($(this).val().length)
             })
         }
 
@@ -130,13 +145,14 @@
         function editTitle() {
             modalShow()
             const content = $("#box-content")
+            $("#remove").attr("onclick", 'remove("title")')
             content.html(`
-                <textarea class="text-input" id="input-title">${_json.embed ? _json.embed.title || "" : ""}</textarea> <div style="display: inline-block;" id="c-title">null</div>
+                <textarea class="text-input" id="input-title" maxlength="256">${_json.embed ? _json.embed.title || "" : ""}</textarea> <div style="display: inline-block;"><span id="c-title">${(_json.embed ? _json.embed.title || "" : "").length}</span>/256</div>
             `)
 
-            $("#input-title").keyup(function() {
+            $("#input-title").keyup(function(e) {
                 if(!newJson.embed) newJson.embed = {}
-
+                $("#c-title").html($(this).val().length)
                 newJson.embed.title = $(this).val()
             })
         }
@@ -144,25 +160,24 @@
         // Author
         $("#b-author").click(editAuthor)
 
-        $("#author").click(editAuthor)
-
         function editAuthor() {
             modalShow()
             const content = $("#box-content")
+            $("#remove").attr("onclick", 'remove("author")')
             content.html(`
-                <h3>Nome</h3><br><textarea class="text-input" id="input-author-name">${_json.embed && _json.embed.author ? _json.embed.author.name || "" : ""}</textarea> <div style="display: inline-block;" id="c-title">null</div>
+                <h3>Nome</h3><br><textarea class="text-input" id="input-author-name" maxlength="256">${_json.embed && _json.embed.author ? _json.embed.author.name || "" : ""}</textarea> <div style="display: inline-block;"><span id="c-author-name">${(_json.embed && _json.embed.author ? _json.embed.author.name || "" : "").length}</span>/256</div>
                 <hr>
-                <h3>URL</h3><br><textarea class="text-input" id="input-author-url">${_json.embed && _json.embed.author ? _json.embed.author.url || "" : ""}</textarea> <div style="display: inline-block;" id="c-title">null</div>
+                <h3>URL</h3><br><textarea class="text-input" id="input-author-url">${_json.embed && _json.embed.author ? _json.embed.author.url || "" : ""}</textarea>
                 <hr>     
-                <h3>Icone URL</h3><br><textarea class="text-input" id="input-author-icon_url">${_json.embed && _json.embed.author ? _json.embed.author.icon_url || "" : ""}</textarea> <div style="display: inline-block;" id="c-title">null</div>
+                <h3>Icone URL</h3><br><textarea class="text-input" id="input-author-icon_url">${_json.embed && _json.embed.author ? _json.embed.author.icon_url || "" : ""}</textarea>
             `)
 
-            $("#input-author-name").keyup(function() {
+            $("#input-author-name").keyup(function () {
                 if(!newJson.embed) newJson.embed = {}
                 if(!newJson.embed.author) newJson.embed.author = {}
-                newJson.embed.author.name = $(this).val()
 
-                console.log(newJson)
+                $("#c-author-name").html($(this).val().length)
+                newJson.embed.author.name = $(this).val()
             })
 
             $("#input-author-url").keyup(function() {
@@ -178,8 +193,6 @@
             })
         }
 
-
-
         // Description
         $("#b-description").click(editDescription)
 
@@ -188,14 +201,62 @@
         function editDescription() {
             modalShow()
             const content = $("#box-content")
+            $("#remove").attr("onclick", 'remove("description")')
             content.html(`
-                <textarea class="text-input" id="input-description">${_json.embed ? _json.embed.description || "" : ""}</textarea> <div style="display: inline-block;" id="c-description">null</div>
+                <textarea class="text-input" id="input-description" maxlength="4096">${_json.embed ? _json.embed.description || "" : ""}</textarea> <div style="display: inline-block;"><span id="c-description">${(_json.embed ? _json.embed.description || "" : "").length}</span>/4096</div>
             `)
 
             $("#input-description").keyup(function() {
                 if(!newJson.embed) newJson.embed = {}
-
+                $("#c-description").html($(this).val().length)
                 newJson.embed.description = $(this).val()
+            })
+        } 
+
+        // Fields
+        $("#b-field").click(editField)
+
+        function editField() {
+            const _field = $(this)
+            const id = _field.attr("id")
+            const fieldID = id != "b-field" ? id : ((newJson.embed || {}).fields || []).length
+            console.log("[Field ID]:", fieldID)
+            const field = (((newJson.embed || {}).fields || [])[Number(fieldID)] || {})
+            modalShow()
+            const content = $("#box-content")
+            $("#remove").attr("onclick", `remove("field", ${fieldID})`)
+            content.html(`
+                <h3>Titulo</h3><br><textarea class="text-input" id="input-field-title" field="${fieldID}" maxlength="256">${field.title || ""}</textarea> <div style="display: inline-block;"><span id="c-field-title">${(field.title || "").length}</span>/256</div>
+                <hr>
+                <h3>Descrição</h3><br><textarea class="text-input" id="input-field-description" field="${fieldID}" maxlength="256">${field.description || ""}</textarea> <div style="display: inline-block;"><span id="c-field-description">${(field.description || "").length}</span>/1024</div>
+                <hr>
+                <input type="checkbox" id="input-field-inline" field="${fieldID}" ${field.inline == true ? "checked" : ""}> <label>Field Inline</labe>
+            `)
+
+            $("#input-field-title").keyup(function() {
+                if(!newJson.embed) newJson.embed = {}
+                if(!newJson.embed.fields) newJson.embed.fields = []
+                $("#c-field-title").html($(this).val().length)
+                let field = newJson.embed.fields[Number($(this).attr("field"))] || {}
+                field.title = $(this).val()
+                newJson.embed.fields[Number($(this).attr("field"))] = field
+            })
+            
+            $("#input-field-description").keyup(function() {
+                if(!newJson.embed) newJson.embed = {}
+                if(!newJson.embed.fields) newJson.embed.fields = []
+                $("#c-field-description").html($(this).val().length)
+                let field = newJson.embed.fields[Number($(this).attr("field"))] || {}
+                field.description = $(this).val()
+                newJson.embed.fields[Number($(this).attr("field"))] = field
+            })
+
+            $("#input-field-inline").change(function() {
+                if(!newJson.embed) newJson.embed = {}
+                if(!newJson.embed.fields) newJson.embed.fields = []
+                let field = newJson.embed.fields[Number($(this).attr("field"))] || {}
+                field.inline = $(this).is(':checked')
+                newJson.embed.fields[Number($(this).attr("field"))] = field
             })
         }
 
@@ -206,23 +267,32 @@
                 _json = { ...newJson }
                 console.log(_json)
                 buildEmbed(json)
-                modalHidden()
             } catch(_) {
-                return
+                console.log(_)    
             }
+
+            modalHidden()
         }
 
-        function remove(item) {
+        function remove(item, id) {
             const button = $(`#b-${item}`),
             _item = $(`#${item}`)
-            _item.html("")
-            button.show()
-            
-            if(_json[item]) delete _json[item]
-            if(_json.embed && _json.embed[item]) delete _json.embed[item]
-            console.log(_json)
-            newJson = { ..._json }
-            changeJSON(JSON.stringify(_json))
+            if(item == "field") {
+                if(_json.embed && _json.embed.fields && _json.embed.fields[Number(id)]) delete _json.embed.fields[Number(id)]
+                _json.embed.fields = _json.embed.fields.filter(x => x)
+                newJson = { ..._json }
+                buildEmbed(JSON.stringify(_json))
+                changeJSON(JSON.stringify(_json))
+            } else {
+                _item.html("")
+                button.show()
+                
+                if(_json[item]) delete _json[item]
+                if(_json.embed && _json.embed[item]) delete _json.embed[item]
+                newJson = { ..._json }
+                buildEmbed(JSON.stringify(_json))
+                changeJSON(JSON.stringify(_json))
+            }
             modalHidden()
         }
 
@@ -230,7 +300,7 @@
             const res = buildEmbed($(this).val())
         })
 
-        $("#json-code").change(function() { changeJSON($(this).val()) })
+        $("#json-code").change(function() { changeJSON($(this).val()); buildEmbed($(this).val()) })
 
         function changeJSON(json) {
             try {
@@ -238,8 +308,9 @@
                 $("#json-code").val(json)
                 _json = JSON.parse(json)
                 newJson = { ..._json }
-                buildEmbed(_json)
+                // buildEmbed(_json)
             } catch(_) {
+                console.log(_)
                 return
             }
         }
@@ -287,7 +358,9 @@
                     description = $("#description"),
                     descriptionBtn = $("#b-description"),
                     author = $("#author"),
-                    authorBtn = $("#b-author")
+                    authorBtn = $("#b-author"),
+                    fields = $("#fields"),
+                    fieldsBtn = $("#b-field")
 
                     if(typeof json.embed.author == "object" && !Array.isArray(json.embed.author)) {
                         if(json.embed.author.name && typeof json.embed.author.name == "string") {
@@ -304,6 +377,36 @@
                     } else {
                         author.html("")
                         authorBtn.show()
+                    }
+
+                    if(Array.isArray(json.embed.fields) && json.embed.fields.length > 0) {
+                        if(json.embed.fields.length >= 25) {
+                            fieldsBtn.hide()
+                        }
+                        fields.html(json.embed.fields.map(function(field, i) {
+                            console.log(`field ${i}`)
+                            return `
+                                <div class="embed-field field${field.inline == true ? "-inline" : ""}" id="${i}">
+                                    <div class="embed-field-name">
+                                        <span class="markdown">${toHTML(field.title, {
+                                            emoji: true,
+                                            stripLinks: true,
+                                            hyperlinks: false,
+                                            code: false,
+                                            inlineCode: false
+                                        })}</span>
+                                    </div>
+                                    <div class="embed-field-value">
+                                        <span class="markdown">${toHTML(field.description, {emoji: true})}</span>
+                                    </div>
+                                </div>
+                            `
+                        }))
+                        $(".embed-field").click(editField)
+                    } else {
+                        console.log("a")
+                        fields.html("")
+                        fieldsBtn.show()
                     }
 
                     if(json.embed.title && typeof json.embed.title == "string") {
@@ -378,15 +481,14 @@
             if (options.inlineCode !== false) {
                 text = text.replace(/`(.{1,})`/ig,'<span class="code">$1</span>');
             }
-
+            
             if (options.hyperlinks !== false) {
                 text = text.replace(/\[(.{1,})\]\(((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)\)/ig, '<a href="$2">$1</a>');
             };
 
-            // if (options.links != false) {
-            //     text = text.replace(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/gi, '<a href="$1">$1</a>')
-            // }
-
+            Object.entries(constants).map(([key, value]) => {
+                text = text.replace(new RegExp(`{${key}}`, 'g'), value);
+            });
             return text
         }
     </script>
