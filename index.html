@@ -31,7 +31,7 @@
             </div>
             <div class="messages">
                 <span class="author-name">Lunar<span class="bot-tag"><svg width="16" height="16" viewBox="0 0 16 15.2"><path d="M7.4,11.17,4,8.62,5,7.26l2,1.53L10.64,4l1.36,1Z" fill="currentColor"></path></svg>BOT </span></span>
-                <span class="timestamp">Hoje às 11:13</span>
+                <span class="timestamp" id="message-timestamp"></span>
     
                 <!-- Embed -->
                 <div class="message">
@@ -71,11 +71,10 @@
                                 <!-- <img src="embed-image.gif" class="embed-image" /> -->
                             </div>
                             
-                            <div class="btn-edit"><i class="fas fa-credit-card-blank"></i> Adicionar Footer </div>
-                            <!-- <div class="embed-footer">
-                                 <img class="embed-footer-icon" src="luny-avatar.png">
-                                <span class="embed-footer-text">Lunary Bot • 03/07/2021 22:16</span>
-                            </div> -->
+                            <div class="btn-edit" id="b-footer"><i class="fas fa-credit-card-blank"></i> Adicionar Footer </div>
+                            <div class="embed-footer" id="footer"></div>
+                            <!-- <img class="embed-footer-icon" src="luny-avatar.png">
+                                <span class="embed-footer-text">Lunary Bot • 03/07/2021 22:16</span> -->
                         </div>
                     </div>
                 </div>
@@ -99,6 +98,8 @@
         let _json = {
             "content": "A Lunar é muito fofinha <:ninlove:885324695971459162>"
         }
+
+        $("#message-timestamp").html(data(Date.now()))
 
         const constants = {
             "userID": "822470491574763580",
@@ -159,6 +160,7 @@
 
         // Author
         $("#b-author").click(editAuthor)
+        $("#author").click(editAuthor)
 
         function editAuthor() {
             modalShow()
@@ -211,7 +213,7 @@
                 $("#c-description").html($(this).val().length)
                 newJson.embed.description = $(this).val()
             })
-        } 
+        }
 
         // Fields
         $("#b-field").click(editField)
@@ -257,6 +259,35 @@
                 let field = newJson.embed.fields[Number($(this).attr("field"))] || {}
                 field.inline = $(this).is(':checked')
                 newJson.embed.fields[Number($(this).attr("field"))] = field
+            })
+        }
+
+        // Footer
+        $("#b-footer").click(editFooter)
+        $("#footer").click(editFooter)
+
+        function editFooter() {
+            modalShow()
+            const content = $("#box-content")
+            $("#remove").attr("onclick", 'remove("footer")')
+            content.html(`
+                <h3>Nome</h3><br><textarea class="text-input" id="input-footer-name" maxlength="256">${_json.embed && _json.embed.footer ? _json.embed.footer.name || "" : ""}</textarea> <div style="display: inline-block;"><span id="c-footer-name">${(_json.embed && _json.embed.footer ? _json.embed.footer.name || "" : "").length}</span>/256</div>
+                <hr>
+                <h3>Icone URL</h3><br><textarea class="text-input" id="input-footer-icon_url">${_json.embed && _json.embed.footer ? _json.embed.footer.icon_url || "" : ""}</textarea>
+            `)
+
+            $("#input-footer-name").keyup(function () {
+                if(!newJson.embed) newJson.embed = {}
+                if(!newJson.embed.footer) newJson.embed.footer = {}
+
+                $("#c-footer-name").html($(this).val().length)
+                newJson.embed.footer.name = $(this).val()
+            })
+
+            $("#input-footer-icon_url").keyup(function() {
+                if(!newJson.embed) newJson.embed = {}
+                if(!newJson.embed.footer) newJson.embed.footer = {}
+                newJson.embed.footer.icon_url = $(this).val()
             })
         }
 
@@ -370,8 +401,10 @@
                     author = $("#author"),
                     authorBtn = $("#b-author"),
                     fields = $("#fields"),
-                    fieldsBtn = $("#b-field")
-
+                    fieldsBtn = $("#b-field"),
+                    footer = $("#footer"),
+                    footerBtn = $("#b-footer")
+                    
                     if(typeof json.embed.author == "object" && !Array.isArray(json.embed.author)) {
                         if(json.embed.author.name && typeof json.embed.author.name == "string") {
                             const text = json.embed.author.name
@@ -441,8 +474,46 @@
                         descriptionBtn.show()
                     }
 
+                    if(typeof json.embed.footer == "object" && !Array.isArray(json.embed.footer)) {
+                        if(json.embed.footer.name && typeof json.embed.footer.name == "string") {
+                            const text = json.embed.footer.name
+                            footerBtn.hide()
+                            footer.html(`
+                                ${json.embed.footer.icon_url ? `<img class="embed-footer-icon" src="${json.embed.footer.icon_url}" />` : ""}
+                                <span class="embed-footer-text" id="footer-text">${text}</span>
+                            `)
+                        } else {
+                            footer.html("")
+                            footerBtn.show()
+                        }
+                    } else {
+                        footer.html("")
+                        footerBtn.show()
+                    }
+
+                    if(json.embed.timestamp == true) {
+                        const _ = $("#footer-text")
+                        const _val = _.html()
+                        const date = data(Date.now())
+                        _.html((_val ? `${_val} • ` : "") + date)
+                    }
                 }
             }
+        }
+
+        function data(a) {
+            let data = new Date(a)
+            const ano = data.getFullYear()
+            let m = data.getMonth() + 1
+            if(m < 10) m = "0" + m
+            let d = data.getDate()
+            if(d < 10) d = "0" + d
+            data.setHours(data.getHours() - 3)
+            let h = data.getUTCHours()
+            if(h < 10) h = "0" + h
+            let min = data.getMinutes()
+            if(min < 10) min = "0" + min
+            return `${d}/${m}/${ano} - ${h}:${min}`
         }
 
         function toHTML(text, options = {}) {
